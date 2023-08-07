@@ -1,10 +1,12 @@
 package com.nmartinez.mpr.http.routes
 
-import cats._
+import cats.*
+import cats.effect.Concurrent
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
-class HealthRoutes[F[_]: Monad] private extends Http4sDsl[F] {
+import org.typelevel.log4cats.Logger
+class HealthRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
   private val healthRoute: HttpRoutes[F] = HttpRoutes.of[F] { case GET -> Root =>
     Ok("All going great!")
   }
@@ -14,5 +16,5 @@ class HealthRoutes[F[_]: Monad] private extends Http4sDsl[F] {
 }
 
 object HealthRoutes {
-  def apply[F[_]: Monad] = new HealthRoutes[F]
+  def apply[F[_]: Concurrent: Logger] = new HealthRoutes[F]
 }

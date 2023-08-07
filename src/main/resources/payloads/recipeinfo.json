@@ -1,0 +1,8 @@
+{
+  "name": "Paella",
+  "people": "2",
+  "servingsPerPerson": "2",
+  "activeTime": "30",
+  "passiveTime": "20",
+  "totalTime": "50"
+}
