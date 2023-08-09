@@ -2,6 +2,9 @@ package com.nmartinez.mpr.domain
 
 import java.time.Duration
 import java.util.{Date, UUID}
+import com.nmartinez.mpr.domain._
+import io.circe._
+import io.circe.generic.auto._
 
 object Recipe {
   case class Recipe(
@@ -19,6 +22,7 @@ object Recipe {
       passiveTime: Option[Long],
       totalTime: Option[Long],
       tags: Option[List[String]],
+      excludedMealSlots: Map[DayOfWeek, List[MealType]]
   )
   
   object RecipeInfo {
@@ -30,7 +34,8 @@ object Recipe {
       None,
       None,
       None,
-      None
+      None,
+      Map.empty
     )
   }
 }

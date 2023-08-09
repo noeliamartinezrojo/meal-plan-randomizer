@@ -4,5 +4,8 @@
   "servingsPerPerson": "2",
   "activeTime": "30",
   "passiveTime": "20",
-  "totalTime": "50"
+  "totalTime": "50",
+  "excludedMealSlots": {
+    "Monday": ["Breakfast", "Dinner"]
+  }
 }
