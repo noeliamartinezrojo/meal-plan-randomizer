@@ -25,17 +25,18 @@ class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
   // "database"
   private[routes] val database = mutable.Map[UUID, Recipe]()
 
-  private[routes] def getRandomRecipes(n: Int): Iterable[Recipe] = {
+  private[routes] def getRandomRecipes(n: Int): Iterable[RecipeView] = {
     if (database.isEmpty) Iterable.empty
     else {
       val timesBigger = Math.ceil(n.toFloat / database.size).toInt
       (1 to timesBigger).flatMap(_ => database.values.take(n))
+        .map(RecipeView(_))
     }
   }
   private[routes] def generateRandomMealPlan(
                                       daysOfWeek: List[DayOfWeek],
                                       mealTypes: List[MealType]
-                                    ): Map[DayOfWeek, Map[MealType, Recipe]] = {
+                                    ): Map[DayOfWeek, Map[MealType, RecipeView]] = {
     if (database.isEmpty || daysOfWeek.isEmpty || mealTypes.isEmpty) Map.empty
     else {
       val it = getRandomRecipes(daysOfWeek.size * mealTypes.size).iterator

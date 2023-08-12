@@ -9,7 +9,7 @@ import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import com.nmartinez.mpr.domain.MealType.*
 import com.nmartinez.mpr.domain.DayOfWeek.*
-import com.nmartinez.mpr.domain.Recipe.{Recipe, RecipeInfo}
+import com.nmartinez.mpr.domain.Recipe.*
 import org.scalatest.matchers.must.Matchers.contain
 
 class RecipeRoutesSpec extends AnyFlatSpec {
@@ -36,15 +36,16 @@ class RecipeRoutesSpec extends AnyFlatSpec {
 
   it should "duplicate recipes if N is greater than the number of recipes in the db" in new RecipesFixture {
     uut.database.put(recipe1.id, recipe1)
-    uut.getRandomRecipes(2) shouldBe Iterable(recipe1, recipe1)
+    uut.getRandomRecipes(2) shouldBe Iterable(RecipeView(recipe1), RecipeView(recipe1))
   }
 
   it should "not duplicate recipes if N is equal or less than the number of recipes in the db" in new RecipesFixture {
     uut.database.put(recipe1.id, recipe1)
     uut.database.put(recipe2.id, recipe2)
-    uut.getRandomRecipes(1) should contain oneOf(recipe1, recipe2)
-    uut.getRandomRecipes(2) should contain allOf(recipe1, recipe2)
+    uut.getRandomRecipes(1) should contain oneOf(RecipeView(recipe1), RecipeView(recipe2))
+    uut.getRandomRecipes(2) should contain allOf(RecipeView(recipe1), RecipeView(recipe2))
   }
+
   trait RecipesFixture {
     def anyRecipe(name: String) = Recipe(
       id = UUID.randomUUID(),

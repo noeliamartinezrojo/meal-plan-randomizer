@@ -38,4 +38,14 @@ object Recipe {
       Map.empty
     )
   }
+
+  case class RecipeView(
+                         name: String,
+                         image: Option[String]
+                       )
+
+  object RecipeView {
+    def apply(recipe: Recipe): RecipeView =
+      RecipeView(recipe.recipeInfo.name, recipe.recipeInfo.image)
+  }
 }
