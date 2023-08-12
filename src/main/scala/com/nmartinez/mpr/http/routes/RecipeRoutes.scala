@@ -2,22 +2,45 @@ package com.nmartinez.mpr.http.routes
 
 import java.util.UUID
 import scala.collection.mutable
+import scala.util.Try
 import cats.*
+import cats.data.Validated
 import cats.implicits.*
 import cats.effect.Concurrent
-import org.http4s.HttpRoutes
-import org.http4s.dsl.Http4sDsl
+import org.http4s.{HttpRoutes, ParseFailure, QueryParamDecoder}
+import org.http4s.dsl.{&, Http4sDsl}
 import org.http4s.server.Router
 import io.circe.generic.auto.*
 import org.http4s.circe.CirceEntityCodec.*
 import org.typelevel.log4cats.Logger
 import com.nmartinez.mpr.domain.Recipe.*
+import com.nmartinez.mpr.domain.MealType
+import com.nmartinez.mpr.domain.DayOfWeek
 import com.nmartinez.mpr.http.responses.*
 import com.nmartinez.mpr.logging.Syntax.*
+
 class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
 
   // "database"
   private val database = mutable.Map[UUID, Recipe]()
+
+  object OptionalDaysOfWeek extends OptionalMultiQueryParamDecoderMatcher[DayOfWeek]("dayOfWeek")
+  object OptionalMealTypes extends OptionalMultiQueryParamDecoderMatcher[MealType]("mealType")
+
+  // POST /meal-plan/randomise?dayOfWeek=Monday&dayOfWeek=Tuesday&mealType=Lunch&mealType=LunchDinner
+  private val randomMealPlanRoute: HttpRoutes[F] = HttpRoutes.of[F] {
+    case POST -> Root / "randomize" :? OptionalDaysOfWeek(validatedDaysOfWeek) +& OptionalMealTypes(validatedMealTypes) => {
+      val allRecipes = database.values
+      val mealPlan: Map[DayOfWeek, Map[MealType, Recipe]] = Map.empty
+      (validatedDaysOfWeek, validatedMealTypes).mapN{ (daysOfWeek, mealTypes) =>
+        for {
+          _ <- Logger[F].info(s"Correctly parsed days of week multi query param: $daysOfWeek")
+          _ <- Logger[F].info(s"Correctly parsed meal types multi query param: $mealTypes")
+          resp <- Ok()
+        } yield resp
+      }.getOrElse(BadRequest())
+    }
+  }
 
   // POST /recipes?offset=x&limit=y { filters }
   // TODO add query params and filters
@@ -84,7 +107,7 @@ class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
   }
 
   val routes = Router(
-    "/recipes" -> (allRecipesRoute <+> findRecipeRoute <+> createRecipeRoute <+> updateRecipeRoute <+> deleteRecipeRoute)
+    "/recipes" -> (randomMealPlanRoute <+> allRecipesRoute <+> findRecipeRoute <+> createRecipeRoute <+> updateRecipeRoute <+> deleteRecipeRoute)
   )
 }
 
