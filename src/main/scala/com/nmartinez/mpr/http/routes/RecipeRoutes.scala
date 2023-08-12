@@ -14,15 +14,34 @@ import io.circe.generic.auto.*
 import org.http4s.circe.CirceEntityCodec.*
 import org.typelevel.log4cats.Logger
 import com.nmartinez.mpr.domain.Recipe.*
-import com.nmartinez.mpr.domain.MealType
+import com.nmartinez.mpr.domain.Recipe.RecipeInfo
 import com.nmartinez.mpr.domain.DayOfWeek
+import com.nmartinez.mpr.domain.MealType
 import com.nmartinez.mpr.http.responses.*
 import com.nmartinez.mpr.logging.Syntax.*
 
 class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
 
   // "database"
-  private val database = mutable.Map[UUID, Recipe]()
+  private[routes] val database = mutable.Map[UUID, Recipe]()
+
+  private[routes] def getRandomRecipes(n: Int): Iterable[Recipe] = {
+    if (database.isEmpty) Iterable.empty
+    else {
+      val timesBigger = Math.ceil(n.toFloat / database.size).toInt
+      (1 to timesBigger).flatMap(_ => database.values.take(n))
+    }
+  }
+  private[routes] def generateRandomMealPlan(
+                                      daysOfWeek: List[DayOfWeek],
+                                      mealTypes: List[MealType]
+                                    ): Map[DayOfWeek, Map[MealType, Recipe]] = {
+    if (database.isEmpty || daysOfWeek.isEmpty || mealTypes.isEmpty) Map.empty
+    else {
+      val it = getRandomRecipes(daysOfWeek.size * mealTypes.size).iterator
+      daysOfWeek.map(_ -> mealTypes.map(_ -> it.next()).toMap).toMap
+    }
+  }
 
   object OptionalDaysOfWeek extends OptionalMultiQueryParamDecoderMatcher[DayOfWeek]("dayOfWeek")
   object OptionalMealTypes extends OptionalMultiQueryParamDecoderMatcher[MealType]("mealType")
@@ -30,13 +49,11 @@ class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
   // POST /meal-plan/randomise?dayOfWeek=Monday&dayOfWeek=Tuesday&mealType=Lunch&mealType=LunchDinner
   private val randomMealPlanRoute: HttpRoutes[F] = HttpRoutes.of[F] {
     case POST -> Root / "randomize" :? OptionalDaysOfWeek(validatedDaysOfWeek) +& OptionalMealTypes(validatedMealTypes) => {
-      val allRecipes = database.values
-      val mealPlan: Map[DayOfWeek, Map[MealType, Recipe]] = Map.empty
       (validatedDaysOfWeek, validatedMealTypes).mapN{ (daysOfWeek, mealTypes) =>
         for {
           _ <- Logger[F].info(s"Correctly parsed days of week multi query param: $daysOfWeek")
           _ <- Logger[F].info(s"Correctly parsed meal types multi query param: $mealTypes")
-          resp <- Ok()
+          resp <- Ok(generateRandomMealPlan(daysOfWeek, mealTypes))
         } yield resp
       }.getOrElse(BadRequest())
     }
@@ -58,7 +75,7 @@ class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
       }
   }
 
-  private def createRecipe(recipeInfo: RecipeInfo): F[Recipe] =
+  private[routes] def createRecipe(recipeInfo: RecipeInfo): F[Recipe] =
     Recipe(
       id = UUID.randomUUID(),
       created = System.currentTimeMillis(),

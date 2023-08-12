@@ -22,12 +22,12 @@ object DayOfWeek {
     Decoder[String].emap(fromString)
 
   implicit val dayOfWeekKeyEncoder: KeyEncoder[DayOfWeek] =
-    (dayOfWeek: DayOfWeek) => dayOfWeek.toString
+    (dw: DayOfWeek) => dw.toString
 
   implicit val dayOfWeekKeyDecoder: KeyDecoder[DayOfWeek] =
     (key: String) => DayOfWeek.fromString(key) match
-      case Left(dayOfWeek) => None
-      case Right(dayOfWeek) => Some(dayOfWeek)
+      case Left(_) => None
+      case Right(dw) => Some(dw)
 
   implicit val dayOfWeekQueryParamDecoder: QueryParamDecoder[DayOfWeek] =
     QueryParamDecoder[String].emap { str =>
