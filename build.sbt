@@ -15,6 +15,7 @@ lazy val testContainerVersion       = "1.17.3"
 lazy val logbackVersion             = "1.4.0"
 lazy val slf4jVersion               = "2.0.0"
 lazy val javaMailVersion            = "1.6.2"
+lazy val monocleVersion             = "3.1.0"
 
 lazy val server = (project in file("."))
   .settings(
@@ -42,6 +43,7 @@ lazy val server = (project in file("."))
       "org.typelevel"     %% "cats-effect-testing-scalatest" % scalaTestCatsEffectVersion % Test,
       "org.testcontainers" % "testcontainers"                % testContainerVersion       % Test,
       "org.testcontainers" % "postgresql"                    % testContainerVersion       % Test,
-      "ch.qos.logback"     % "logback-classic"               % logbackVersion             % Test
+      "ch.qos.logback"     % "logback-classic"               % logbackVersion             % Test, "dev.optics" %% "monocle-core" % "3.1.0",
+      "dev.optics"        %% "monocle-macro"                 % monocleVersion,
     ),
   )

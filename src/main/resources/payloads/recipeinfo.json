@@ -1,11 +1,11 @@
 {
   "name": "Paella",
-  "people": "2",
-  "servingsPerPerson": "2",
-  "activeTime": "30",
-  "passiveTime": "20",
-  "totalTime": "50",
-  "excludedMealSlots": {
-    "Monday": ["Breakfast", "Dinner"]
-  }
+  "servingsPerBatch": "4",
+  "maxBatchesPerWeek": "5",
+  "excludeFrom": [
+    {
+      "day": "Monday",
+      "meal": "Lunch"
+    }
+  ]
 }

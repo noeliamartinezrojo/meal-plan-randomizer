@@ -4,59 +4,78 @@ import java.util.UUID
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.*
 import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.contain
 import cats.effect.IO
+import com.nmartinez.mpr.RecipeFixture
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import com.nmartinez.mpr.domain.MealType.*
 import com.nmartinez.mpr.domain.DayOfWeek.*
+import com.nmartinez.mpr.domain.MealPlan.*
 import com.nmartinez.mpr.domain.Recipe.*
-import org.scalatest.matchers.must.Matchers.contain
+import monocle.syntax.all.*
+import scala.collection.MapView
+import scala.collection.immutable.Map
 
-class RecipeRoutesSpec extends AnyFlatSpec {
+class RecipeRoutesSpec extends AnyFlatSpec with RecipeFixture {
 
-  "generateRandomMealPlan" should "return an empty plan if the recipe db is empty" in new RecipesFixture {
+  behavior of "generateRandomMealPlanTailrec"
+
+  it should "return an empty plan if there are no recipes" in {
+    // setup
     uut.database.size shouldBe 0
-    uut.generateRandomMealPlan(List(Monday), List(Lunch)) shouldBe Map.empty
+    // test
+    val mealPlan = uut.generateRandomMealPlan(List(Monday), List(Lunch))
+    // assert
+    mealPlan shouldBe Map.empty
   }
 
-  it should "return an empty plan if days of the week is an empty list" in new RecipesFixture {
+  it should "return an empty plan if no meals are specified" in {
+    // setup
     uut.database.put(recipe1.id, recipe1)
-    uut.generateRandomMealPlan(Nil, List(Lunch)) shouldBe Map.empty
+    // test
+    val mealPlan = uut.generateRandomMealPlan(Nil, Nil)
+    // assert
+    mealPlan shouldBe Map.empty
   }
 
-  it should "return an empty plan if meal types is an empty list" in new RecipesFixture {
-    uut.database.put(recipe1.id, recipe1)
-    uut.generateRandomMealPlan(List(Monday), Nil) shouldBe Map.empty
+  it should "exclude recipes from day and meal combinations in their excludeFrom" in {
+    // setup
+    uut.database.put(recipe1.id, recipe1.focus(_.recipeInfo.excludeFrom).replace(List(Meal(Monday, Lunch))))
+    // test
+    val mealPlan = uut.generateRandomMealPlan(List(Monday, Tuesday), List(Lunch))
+    // assert
+    mealPlan.view.mapValues(_.view.mapValues(_.recipeInfo.name).toMap).toMap shouldBe Map(
+      Tuesday -> Map(
+        Lunch -> "recipe 1"
+      )
+    )
   }
 
-  "getRandomRecipes" should "return no recipes if recipe db is empty" in new RecipesFixture {
-    uut.getRandomRecipes(0) shouldBe Iterable()
-    uut.getRandomRecipes(1) shouldBe Iterable()
+  it should "duplicate recipes up to their maxBatchesPerWeek if there are fewer recipes than meals in the meal plan" in {
+    // setup
+    uut.database.put(recipe1.id, recipe1.focus(_.recipeInfo.maxBatchesPerWeek).replace(2))
+    // test
+    val mealPlan = uut.generateRandomMealPlan(List(Monday, Tuesday), List(Lunch, Dinner))
+    // assert
+    mealPlan.view.mapValues(_.view.mapValues(_.recipeInfo.name).toMap).toMap shouldBe Map(
+      Monday -> Map(
+        Lunch -> "recipe 1",
+        Dinner -> "recipe 1",
+      )
+    )
   }
 
-  it should "duplicate recipes if N is greater than the number of recipes in the db" in new RecipesFixture {
-    uut.database.put(recipe1.id, recipe1)
-    uut.getRandomRecipes(2) shouldBe Iterable(RecipeView(recipe1), RecipeView(recipe1))
-  }
-
-  it should "not duplicate recipes if N is equal or less than the number of recipes in the db" in new RecipesFixture {
+  it should "not duplicate recipes if there as many recipes or more than meals in the meal plan" in {
+    // setup
     uut.database.put(recipe1.id, recipe1)
     uut.database.put(recipe2.id, recipe2)
-    uut.getRandomRecipes(1) should contain oneOf(RecipeView(recipe1), RecipeView(recipe2))
-    uut.getRandomRecipes(2) should contain allOf(RecipeView(recipe1), RecipeView(recipe2))
-  }
-
-  trait RecipesFixture {
-    def anyRecipe(name: String) = Recipe(
-      id = UUID.randomUUID(),
-      created = System.currentTimeMillis(),
-      ownerEmail = "TODO@nmartinez.com",
-      recipeInfo = RecipeInfo.empty.copy(name = name)
-    )
-    val recipe1 = anyRecipe("recipe 1")
-    val recipe2 = anyRecipe("recipe 2")
-    val recipe3 = anyRecipe("recipe 3")
-    given logger: Logger[IO] = Slf4jLogger.getLogger[IO]
-    val uut = RecipeRoutes[IO]
+    uut.database.put(recipe3.id, recipe3)
+    // test
+    val mealPlan = uut.generateRandomMealPlan(List(Monday), List(Lunch, Dinner))
+    // assert
+    mealPlan.values.count(_ === recipe1) should be < 2
+    mealPlan.values.count(_ === recipe2) should be < 2
+    mealPlan.values.count(_ === recipe3) should be < 2
   }
 }

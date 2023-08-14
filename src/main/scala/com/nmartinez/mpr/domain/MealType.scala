@@ -11,21 +11,21 @@ object MealType {
   private def fromString(str: String): Either[String, MealType] =
     values
       .find(_.toString.toUpperCase == str.toUpperCase)
-      .toRight(s"$str is not a valid MealType")
+      .toRight(s"$str is not a valid MealOfDay")
   given Encoder[MealType] =
     Encoder[String].contramap(_.toString)
   given Decoder[MealType] =
     Decoder[String].emap(fromString)
 
-  implicit val mealTypeKeyEncoder: KeyEncoder[MealType] =
-    (mt: MealType) => mt.toString
+  implicit val mealOfDayKeyEncoder: KeyEncoder[MealType] =
+    (meal: MealType) => meal.toString
 
-  implicit val mealTypeKeyDecoder: KeyDecoder[MealType] =
+  implicit val mealOfDayKeyDecoder: KeyDecoder[MealType] =
     (key: String) => MealType.fromString(key) match
       case Left(_) => None
-      case Right(mt) => Some(mt)
+      case Right(meal) => Some(meal)
 
-  implicit val mealTypeQueryParamDecoder: QueryParamDecoder[MealType] =
+  implicit val mealOfDayQueryParamDecoder: QueryParamDecoder[MealType] =
     QueryParamDecoder[String].emap { str =>
       MealType.fromString(str)
         .leftMap(err => ParseFailure(err, err))

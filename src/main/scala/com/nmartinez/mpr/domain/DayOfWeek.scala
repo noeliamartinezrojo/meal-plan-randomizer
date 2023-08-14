@@ -17,17 +17,17 @@ object DayOfWeek {
 
   given Encoder[DayOfWeek] =
     Encoder[String].contramap(_.toString)
-
+  Encoder
   given Decoder[DayOfWeek] =
     Decoder[String].emap(fromString)
 
   implicit val dayOfWeekKeyEncoder: KeyEncoder[DayOfWeek] =
-    (dw: DayOfWeek) => dw.toString
+    (day: DayOfWeek) => day.toString
 
   implicit val dayOfWeekKeyDecoder: KeyDecoder[DayOfWeek] =
     (key: String) => DayOfWeek.fromString(key) match
       case Left(_) => None
-      case Right(dw) => Some(dw)
+      case Right(day) => Some(day)
 
   implicit val dayOfWeekQueryParamDecoder: QueryParamDecoder[DayOfWeek] =
     QueryParamDecoder[String].emap { str =>
