@@ -1,29 +1,21 @@
 package com.nmartinez.mealplanrandomizer.playground
 
 import cats.effect.*
+import com.nmartinez.mealplanrandomizer.dao.LiveRecipes
 import com.nmartinez.mealplanrandomizer.domain.RecipeInfo
-import com.nmartinez.mealplanrandomizer.core.*
+import com.nmartinez.mealplanrandomizer.modules.Core.postgresResource
 import doobie.*
 import doobie.implicits.*
 import doobie.util.*
 import doobie.hikari.HikariTransactor
+
 import scala.io.StdIn
 
 object RecipesPlayground extends IOApp.Simple {
-  val postgresResource: Resource[IO, HikariTransactor[IO]] = for {
-    ec <- ExecutionContexts.fixedThreadPool(32)
-    xa <- HikariTransactor.newHikariTransactor[IO](
-      "org.postgresql.Driver",
-      "jdbc:postgresql:mealplanrandomizer",
-      "docker",
-      "docker",
-      ec
-    )
-  } yield xa
 
   val recipeInfo = RecipeInfo(name = "paella", servingsPerBatch = 4)
 
-  override def run: IO[Unit] = postgresResource.use { xa =>
+  override def run: IO[Unit] = postgresResource[IO].use { xa =>
     for {
       recipes <- LiveRecipes[IO](xa)
       _ <- IO(println("Press to create a recipe...")) *> IO(StdIn.readLine)

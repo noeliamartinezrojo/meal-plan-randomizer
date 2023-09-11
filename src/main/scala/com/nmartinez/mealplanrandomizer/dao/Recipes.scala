@@ -1,17 +1,18 @@
-package com.nmartinez.mealplanrandomizer.core
+package com.nmartinez.mealplanrandomizer.dao
 
-import com.nmartinez.mealplanrandomizer.domain.*
-import java.util.UUID
 import cats.*
 import cats.data.NonEmptyList
+import cats.effect.*
 import cats.implicits.*
+import com.nmartinez.mealplanrandomizer.domain.*
 import doobie.*
 import doobie.implicits.*
 import doobie.postgres.*
 import doobie.postgres.implicits.*
 import doobie.util.*
-import cats.effect.*
 import org.postgresql.util.PGobject
+
+import java.util.UUID
 trait Recipes[F[_]] {
   def create(ownerEmail: String, recipeInfo: RecipeInfo): F[UUID]
   def all(): F[List[Recipe]]

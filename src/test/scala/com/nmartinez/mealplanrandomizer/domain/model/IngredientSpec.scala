@@ -1,16 +1,15 @@
-package com.nmartinez.mealplanrandomizer.domain
+package com.nmartinez.mealplanrandomizer.domain.model
 
 import cats.Monoid
 import cats.implicits.catsSyntaxSemigroup
-import com.nmartinez.mealplanrandomizer.domain.Ingredient.Ingredient
 import com.nmartinez.mealplanrandomizer.domain.Ingredient.*
-import com.nmartinez.mealplanrandomizer.domain.Ingredient.Ingredient.*
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.*
-import org.scalatest.matchers.should.Matchers.*
+import com.nmartinez.mealplanrandomizer.domain.*
 import io.circe.*
 import io.circe.parser.*
 import io.circe.syntax.*
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.*
+import org.scalatest.matchers.should.Matchers.*
 class IngredientSpec extends AnyFlatSpec {
 
   behavior of "Ingredient"
