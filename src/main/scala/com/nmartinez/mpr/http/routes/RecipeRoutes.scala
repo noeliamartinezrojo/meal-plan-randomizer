@@ -7,9 +7,11 @@ import cats.*
 import cats.data.Validated
 import cats.implicits.*
 import cats.effect.Concurrent
-import com.nmartinez.mpr.domain.DayOfWeek.Monday
-import com.nmartinez.mpr.domain.MealPlan.Meal
-import com.nmartinez.mpr.domain.MealType.{Dinner, Lunch}
+import com.nmartinez.mpr.domain.DayOfWeek.*
+import com.nmartinez.mpr.domain.MealPlan.{Meal, MealPlan}
+import com.nmartinez.mpr.domain.MealType.*
+import com.nmartinez.mpr.domain.Ingredient.*
+import com.nmartinez.mpr.domain.Recipe.*
 import org.http4s.{HttpRoutes, ParseFailure, QueryParamDecoder}
 import org.http4s.dsl.{&, Http4sDsl}
 import org.http4s.server.Router
@@ -18,7 +20,7 @@ import org.http4s.circe.*
 import org.http4s.circe.CirceEntityCodec.*
 import org.typelevel.log4cats.Logger
 import com.nmartinez.mpr.domain.Recipe.*
-import com.nmartinez.mpr.domain.{DayOfWeek, MealPlan, MealType}
+import com.nmartinez.mpr.domain.{DayOfWeek, IngredientType, IngredientUnit, MealPlan, MealType}
 import com.nmartinez.mpr.http.responses.*
 import com.nmartinez.mpr.logging.Syntax.*
 
@@ -81,7 +83,7 @@ class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
 
   // POST /meal-plan/randomise?day=Monday&day=Tuesday&meal=Lunch&meal=LunchDinner
   private val randomMealPlanRoute: HttpRoutes[F] = HttpRoutes.of[F] {
-    case POST -> Root / "random" :? OptionalDays(validatedDays) +& OptionalMeals(validatedMeals) => {
+    case POST -> Root / "random" :? OptionalDays(validatedDays) +& OptionalMeals(validatedMeals) =>
       (validatedDays, validatedMeals).mapN{ (days, meals) =>
         for {
           _ <- Logger[F].info(s"Correctly parsed days multi query param: $days")
@@ -89,12 +91,21 @@ class RecipeRoutes[F[_]: Concurrent: Logger] private extends Http4sDsl[F] {
           resp <- Ok(generateRandomMealPlan(days, meals))
         } yield resp
       }.getOrElse(BadRequest())
-    }
+  }
+
+  final def generateShoppingList(mealPlan: MealPlan): List[Ingredient] = {
+    val recipes = mealPlan.values.flatMap(_.values)
+    val ingredientLists = recipes.map(_.recipeInfo.ingredients)
+    ingredientLists.fold(Nil)((l1, l2) => l1 |+| l2)
   }
 
   private val shoppingListRoute: HttpRoutes[F] = HttpRoutes.of[F] {
-    case POST -> Root / "shopping-list" =>
-      Ok("TODO shopping list: parse meal plan on req body -> calculate shopping list")
+    case req @ POST -> Root / "shopping-list" =>
+      for {
+        mealPlan <- req.as[MealPlan].logError(e => s"Parsing payload failed: $e")
+        _ <- Logger[F].info(s"Parsed meal plan: $mealPlan")
+        resp <- Ok(generateShoppingList(mealPlan))
+      } yield resp
   }
 
     // POST /recipes?offset=x&limit=y { filters }

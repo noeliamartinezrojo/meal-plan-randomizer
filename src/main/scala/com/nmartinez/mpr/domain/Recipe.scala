@@ -5,6 +5,7 @@ import cats.kernel.Eq
 import java.time.Duration
 import java.util.{Date, UUID}
 import com.nmartinez.mpr.domain.*
+import com.nmartinez.mpr.domain.Ingredient.*
 import com.nmartinez.mpr.domain.MealPlan.*
 import io.circe.*
 import io.circe.generic.auto.*
@@ -25,6 +26,7 @@ object Recipe {
                          servingsPerBatch: Int,
                          maxBatchesPerWeek: Int, // TODO: make optional? by default 1? Add minBatchesPerWeek
                          excludeFrom: List[Meal], // TODO: make optional?
+                         ingredients: List[Ingredient],
                          tags: Option[List[String]]
                        )
 
@@ -34,6 +36,7 @@ object Recipe {
       None,
       1,
       1,
+      Nil,
       Nil,
       None
     )

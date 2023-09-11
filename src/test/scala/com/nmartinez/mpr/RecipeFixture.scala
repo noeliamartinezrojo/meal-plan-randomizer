@@ -5,7 +5,6 @@ import com.nmartinez.mpr.domain.Recipe.*
 import com.nmartinez.mpr.http.routes.RecipeRoutes
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
-
 import java.util.UUID
 
 trait RecipeFixture {

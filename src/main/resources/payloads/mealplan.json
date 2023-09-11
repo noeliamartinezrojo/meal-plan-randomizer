@@ -1,0 +1,56 @@
+{
+  "Monday": {
+    "Breakfast": {
+      "created": 1692039057675,
+      "id": "bad9f450-b506-48ff-bc16-7431c557882e",
+      "ownerEmail": "TODO@nmartinez.com",
+      "recipeInfo": {
+        "excludeFrom": [
+          {
+            "day": "Monday",
+            "meal": "Lunch"
+          }
+        ],
+        "image": null,
+        "maxBatchesPerWeek": 5,
+        "name": "Risotto",
+        "servingsPerBatch": 4,
+        "tags": null,
+        "ingredients": [
+          {
+            "type": "Vegetables",
+            "name": "Onion",
+            "unit": "Units",
+            "qty": 1.0
+          }
+        ]
+      }
+    },
+    "Lunch": {
+      "created": 1692039057675,
+      "id": "bad9f450-b506-48ff-bc16-7431c557882e",
+      "ownerEmail": "TODO@nmartinez.com",
+      "recipeInfo": {
+        "excludeFrom": [
+          {
+            "day": "Monday",
+            "meal": "Lunch"
+          }
+        ],
+        "image": null,
+        "maxBatchesPerWeek": 5,
+        "name": "Risotto",
+        "servingsPerBatch": 4,
+        "tags": null,
+        "ingredients": [
+          {
+            "type": "Vegetables",
+            "name": "Onion",
+            "unit": "Units",
+            "qty": 1.0
+          }
+        ]
+      }
+    }
+  }
+}

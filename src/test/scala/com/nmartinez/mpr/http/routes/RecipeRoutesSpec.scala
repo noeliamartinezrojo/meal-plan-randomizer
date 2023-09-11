@@ -11,8 +11,12 @@ import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import com.nmartinez.mpr.domain.MealType.*
 import com.nmartinez.mpr.domain.DayOfWeek.*
+import com.nmartinez.mpr.domain.Ingredient.Ingredient
+import com.nmartinez.mpr.domain.{IngredientType, IngredientUnit}
 import com.nmartinez.mpr.domain.MealPlan.*
 import com.nmartinez.mpr.domain.Recipe.*
+import com.nmartinez.mpr.domain.IngredientType.*
+import com.nmartinez.mpr.domain.IngredientUnit.*
 import monocle.syntax.all.*
 import scala.collection.MapView
 import scala.collection.immutable.Map
