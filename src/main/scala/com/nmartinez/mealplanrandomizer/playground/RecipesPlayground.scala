@@ -2,7 +2,7 @@ package com.nmartinez.mealplanrandomizer.playground
 
 import cats.effect.*
 import com.nmartinez.mealplanrandomizer.config.AppConfig
-import com.nmartinez.mealplanrandomizer.dao.LiveRecipes
+import com.nmartinez.mealplanrandomizer.db.LiveRecipes
 import com.nmartinez.mealplanrandomizer.domain.RecipeInfo
 import com.nmartinez.mealplanrandomizer.modules.Core.*
 import com.nmartinez.mealplanrandomizer.modules.{Core, Database}

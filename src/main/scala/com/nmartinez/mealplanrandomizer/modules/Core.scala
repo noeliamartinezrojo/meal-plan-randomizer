@@ -1,6 +1,6 @@
 package com.nmartinez.mealplanrandomizer.modules
 
-import com.nmartinez.mealplanrandomizer.dao.*
+import com.nmartinez.mealplanrandomizer.db.*
 import cats.effect.*
 import doobie.util.*
 import doobie.util.transactor.Transactor

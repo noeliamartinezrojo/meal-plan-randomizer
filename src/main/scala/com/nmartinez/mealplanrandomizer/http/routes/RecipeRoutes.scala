@@ -6,7 +6,7 @@ import cats.*
 import cats.data.Validated
 import cats.implicits.*
 import cats.effect.Concurrent
-import com.nmartinez.mealplanrandomizer.dao.Recipes
+import com.nmartinez.mealplanrandomizer.db.Recipes
 import org.http4s.{HttpRoutes, ParseFailure, QueryParamDecoder}
 import org.http4s.dsl.{&, Http4sDsl}
 import org.http4s.server.Router

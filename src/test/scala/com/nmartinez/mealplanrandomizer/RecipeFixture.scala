@@ -11,11 +11,10 @@ import java.util.UUID
 import monocle.syntax.all.*
 
 trait RecipeFixture {
-  
-  val notFoundRecipeUUID = UUID.fromString("11111111-2222-3333-4444-000000000000")
+
+  val notFoundUUID = UUID.fromString("11111111-2222-3333-4444-000000000000")
   val testRecipeUUID = UUID.fromString("11111111-2222-3333-4444-000000000001")
   val newRecipeUUID = UUID.fromString("11111111-2222-3333-4444-000000000002")
-
 
   val testRecipe = Recipe(
     id = testRecipeUUID,
@@ -35,10 +34,36 @@ trait RecipeFixture {
     )
   )
 
+  val testRecipeDbVersion: Recipe =
+    testRecipe
+      .focus(_.recipeInfo.excludeFrom)
+      .replace(Nil)
+      .focus(_.recipeInfo.ingredients)
+      .replace(Nil)
+
+  val newRecipeInfo = RecipeInfo(
+    name = "newRecipeName",
+    image = Option("newRecipeImage"),
+    servingsPerBatch = 5,
+    minBatchesPerWeek = 2,
+    maxBatchesPerWeek = 3,
+    excludeFrom = Nil,
+    ingredients = Nil
+  )
+
   val updatedTestRecipe =
     testRecipe
+      .focus(_.recipeInfo.image)
+      .replace(Option("updatedRecipeImage"))
       .focus(_.recipeInfo.ingredients.index(1).as[Ingredient].qty)
       .replace(1.0) // reduce quantity of red pepper from 2 to 1
+
+  val updatedTestRecipeDbVersion =
+    updatedTestRecipe
+      .focus(_.recipeInfo.excludeFrom)
+      .replace(Nil)
+      .focus(_.recipeInfo.ingredients)
+      .replace(Nil)
 
   def anyRecipe(name: String) = Recipe(
     id = UUID.randomUUID(),

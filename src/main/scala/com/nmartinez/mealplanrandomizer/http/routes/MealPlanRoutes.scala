@@ -4,7 +4,7 @@ import cats.*
 import cats.data.Validated
 import cats.effect.Concurrent
 import cats.implicits.*
-import com.nmartinez.mealplanrandomizer.dao.Recipes
+import com.nmartinez.mealplanrandomizer.db.Recipes
 import com.nmartinez.mealplanrandomizer.domain.*
 import com.nmartinez.mealplanrandomizer.domain.Ingredient.*
 import com.nmartinez.mealplanrandomizer.http.responses.*

@@ -5,7 +5,7 @@ import org.http4s.circe.*
 import org.http4s.circe.CirceEntityCodec.*
 import com.nmartinez.mealplanrandomizer.domain.*
 import com.nmartinez.mealplanrandomizer.RecipeFixture
-import com.nmartinez.mealplanrandomizer.dao.Recipes
+import com.nmartinez.mealplanrandomizer.db.Recipes
 import monocle.syntax.all.*
 import org.scalatest.matchers.*
 import org.typelevel.log4cats.Logger
@@ -15,7 +15,7 @@ import cats.implicits.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.freespec.AsyncFreeSpec
 import cats.effect.testing.scalatest.AsyncIOSpec
-import org.http4s.dsl.{io, *}
+import org.http4s.dsl.*
 import org.http4s.*
 import org.http4s.implicits.*
 import java.util.UUID

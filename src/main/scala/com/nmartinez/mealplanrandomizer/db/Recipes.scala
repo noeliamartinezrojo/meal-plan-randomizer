@@ -1,4 +1,4 @@
-package com.nmartinez.mealplanrandomizer.dao
+package com.nmartinez.mealplanrandomizer.db
 
 import cats.*
 import cats.data.NonEmptyList

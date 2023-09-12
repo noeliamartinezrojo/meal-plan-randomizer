@@ -3,7 +3,7 @@ package com.nmartinez.mealplanrandomizer.modules
 import cats.effect.Concurrent
 import cats.implicits.*
 import cats.effect.*
-import com.nmartinez.mealplanrandomizer.dao.Recipes
+import com.nmartinez.mealplanrandomizer.db.Recipes
 import com.nmartinez.mealplanrandomizer.http.routes.*
 import org.http4s.server.Router
 import org.typelevel.log4cats.Logger
