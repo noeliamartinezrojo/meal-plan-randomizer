@@ -1,8 +1,58 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
+lazy val nmartinez     = "com.nmartinez"
 lazy val scala3Version = "3.2.1"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Common - contains domain model
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+lazy val core = (crossProject(JSPlatform, JVMPlatform) in file("common"))
+  .settings(
+    name         := "common",
+    scalaVersion := scala3Version,
+    organization := nmartinez
+  )
+  .jvmSettings(
+    // add here if necessary
+  )
+  .jsSettings(
+    // Add JS-specific settings here
+  )
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Frontend
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+lazy val tyrianVersion = "0.6.1"
+lazy val fs2DomVersion = "0.1.0"
+lazy val laikaVersion  = "0.19.0"
 lazy val circeVersion  = "0.14.0"
+
+lazy val app = (project in file("app"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(
+    name         := "app",
+    scalaVersion := scala3Version,
+    organization := nmartinez,
+    libraryDependencies ++= Seq(
+      "io.indigoengine" %%% "tyrian-io"     % tyrianVersion,
+      "com.armanbilge"  %%% "fs2-dom"       % fs2DomVersion,
+      "org.planet42"    %%% "laika-core"    % laikaVersion,
+      "io.circe"        %%% "circe-core"    % circeVersion,
+      "io.circe"        %%% "circe-parser"  % circeVersion,
+      "io.circe"        %%% "circe-generic" % circeVersion
+    ),
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+    semanticdbEnabled := true,
+    autoAPIMappings   := true
+  )
+  .dependsOn(core.js)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backend
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 lazy val catsEffectVersion          = "3.3.14"
 lazy val http4sVersion              = "0.23.15"
 lazy val doobieVersion              = "1.0.0-RC1"
@@ -17,11 +67,11 @@ lazy val slf4jVersion               = "2.0.0"
 lazy val javaMailVersion            = "1.6.2"
 lazy val monocleVersion             = "3.1.0"
 
-lazy val server = (project in file("."))
+lazy val server = (project in file("server"))
   .settings(
-    name         := "typelevel-project",
+    name         := "server",
     scalaVersion := scala3Version,
-    organization := "com.nmartinez",
+    organization := nmartinez,
     libraryDependencies ++= Seq(
       "org.typelevel"         %% "cats-effect"         % catsEffectVersion,
       "org.http4s"            %% "http4s-dsl"          % http4sVersion,
@@ -46,4 +96,6 @@ lazy val server = (project in file("."))
       "ch.qos.logback"     % "logback-classic"               % logbackVersion             % Test, "dev.optics" %% "monocle-core" % "3.1.0",
       "dev.optics"        %% "monocle-macro"                 % monocleVersion,
     ),
+    Compile / mainClass := Some("com.nmartinez.meals.Application")
   )
+  .dependsOn(core.jvm)
