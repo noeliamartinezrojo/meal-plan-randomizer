@@ -3,6 +3,7 @@ package com.nmartinez.meals.components
 import tyrian.*
 import tyrian.Html.*
 import com.nmartinez.meals.core.*
+import com.nmartinez.meals.pages.*
 import scala.scalajs.js
 import scala.scalajs.js.annotation.*
 
@@ -14,9 +15,9 @@ object Header {
       renderLogo(),
       div(`class` := "header-nav")(
         ul(`class` := "header-links")(
-          renderNavLink("Recipes", "/recipes"),
-          renderNavLink("Login", "/login"),
-          renderNavLink("Sign Up", "/signup")
+          renderNavLink("Recipes", Page.URLs.RECIPES),
+          renderNavLink("Login", Page.URLs.LOGIN),
+          renderNavLink("Sign Up", Page.URLs.SIGNUP)
         )
       )
     )

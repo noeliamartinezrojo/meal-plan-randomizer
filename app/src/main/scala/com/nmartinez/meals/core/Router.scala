@@ -4,6 +4,17 @@ import tyrian.*
 import cats.effect.IO
 import fs2.dom.History
 
+object Router {
+  trait Msg
+  case class ChangeLocation(location: String, browserTriggered: Boolean = false) extends Msg
+  case class ExternalRedirect(location: String) extends Msg
+
+  def startAt[M](initialLocation: String): (Router, Cmd[IO, M]) = {
+    val router = Router(initialLocation, History[IO, String])
+    (router, router.goto(initialLocation))
+  }
+}
+
 case class Router private (location: String, history: History[IO, String]) {
   import Router.*
 
@@ -23,15 +34,4 @@ case class Router private (location: String, history: History[IO, String]) {
     Cmd.SideEffect[IO] {
       history.pushState(location, location)
     }
-}
-
-object Router {
-  trait Msg
-  case class ChangeLocation(location: String, browserTriggered: Boolean = false) extends Msg
-  case class ExternalRedirect(location: String) extends Msg
-
-  def startAt[M](initialLocation: String): (Router, Cmd[IO, M]) = {
-    val router = Router(initialLocation, History[IO, String])
-    (router, router.goto(initialLocation))
-  }
 }
