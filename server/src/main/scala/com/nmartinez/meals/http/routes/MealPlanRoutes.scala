@@ -4,12 +4,11 @@ import cats.*
 import cats.data.Validated
 import cats.effect.Concurrent
 import cats.implicits.*
-import com.nmartinez.meals.db.Recipes
+import com.nmartinez.meals.core.{MealPlans, Recipes}
 import com.nmartinez.meals.domain.*
 import com.nmartinez.meals.domain.Ingredient.*
 import com.nmartinez.meals.http.responses.*
 import com.nmartinez.meals.logging.Syntax.*
-import com.nmartinez.meals.logic.MealPlans
 import io.circe.generic.auto.*
 import org.http4s.circe.*
 import org.http4s.circe.CirceEntityCodec.*

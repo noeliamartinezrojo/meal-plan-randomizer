@@ -1,10 +1,10 @@
-package com.nmartinez.meals.domain.logic
+package com.nmartinez.meals.core
 
 import com.nmartinez.meals.RecipeFixture
+import com.nmartinez.meals.core.MealPlans
 import com.nmartinez.meals.domain.*
 import com.nmartinez.meals.domain.DayOfWeek.*
 import com.nmartinez.meals.domain.MealType.*
-import com.nmartinez.meals.logic.MealPlans
 import monocle.syntax.all.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.*
@@ -12,6 +12,7 @@ import org.scalatest.matchers.must.Matchers.contain
 import org.scalatest.matchers.should.Matchers.*
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
+
 import java.util.UUID
 import scala.collection.MapView
 import scala.collection.immutable.Map

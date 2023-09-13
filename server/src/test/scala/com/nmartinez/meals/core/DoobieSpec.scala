@@ -1,4 +1,4 @@
-package com.nmartinez.meals.db
+package com.nmartinez.meals.core
 
 import cats.effect.*
 import doobie.*

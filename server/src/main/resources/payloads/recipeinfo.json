@@ -1,8 +1,8 @@
 {
-  "name": "Seafood Paella",
+  "name": "",
   "servingsPerBatch": 4,
   "minBatchesPerWeek": 0,
-  "maxBatchesPerWeek": 5,
+  "maxBatchesPerWeek": -1,
   "excludeFrom": [
     {
       "day": "Monday",

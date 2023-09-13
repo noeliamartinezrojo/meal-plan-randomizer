@@ -1,9 +1,9 @@
-package com.nmartinez.meals.domain.model
+package com.nmartinez.meals.domain
 
 import cats.Monoid
 import cats.implicits.catsSyntaxSemigroup
-import com.nmartinez.meals.domain.Ingredient.*
 import com.nmartinez.meals.domain.*
+import com.nmartinez.meals.domain.Ingredient.*
 import io.circe.*
 import io.circe.parser.*
 import io.circe.syntax.*

@@ -3,7 +3,7 @@ package com.nmartinez.meals.modules
 import cats.effect.Concurrent
 import cats.implicits.*
 import cats.effect.*
-import com.nmartinez.meals.db.Recipes
+import com.nmartinez.meals.core.Recipes
 import com.nmartinez.meals.http.routes.*
 import org.http4s.server.Router
 import org.typelevel.log4cats.Logger

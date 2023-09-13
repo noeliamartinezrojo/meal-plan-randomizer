@@ -5,7 +5,7 @@ import org.http4s.circe.*
 import org.http4s.circe.CirceEntityCodec.*
 import com.nmartinez.meals.domain.*
 import com.nmartinez.meals.RecipeFixture
-import com.nmartinez.meals.db.Recipes
+import com.nmartinez.meals.core.Recipes
 import monocle.syntax.all.*
 import org.scalatest.matchers.*
 import org.typelevel.log4cats.Logger

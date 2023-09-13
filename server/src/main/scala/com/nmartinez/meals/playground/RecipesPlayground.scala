@@ -2,7 +2,7 @@ package com.nmartinez.meals.playground
 
 import cats.effect.*
 import com.nmartinez.meals.config.AppConfig
-import com.nmartinez.meals.db.LiveRecipes
+import com.nmartinez.meals.core.LiveRecipes
 import com.nmartinez.meals.domain.RecipeInfo
 import com.nmartinez.meals.modules.Core.*
 import com.nmartinez.meals.modules.{Core, Database}

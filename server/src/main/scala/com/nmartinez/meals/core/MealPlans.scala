@@ -1,8 +1,9 @@
-package com.nmartinez.meals.logic
+package com.nmartinez.meals.core
 
-import com.nmartinez.meals.domain.*
-import scala.annotation.tailrec
 import cats.implicits.*
+import com.nmartinez.meals.domain.*
+
+import scala.annotation.tailrec
 import scala.util.Random
 object MealPlans {
 

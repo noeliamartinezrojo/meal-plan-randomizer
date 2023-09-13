@@ -1,6 +1,6 @@
 package com.nmartinez.meals.modules
 
-import com.nmartinez.meals.db.*
+import com.nmartinez.meals.core.*
 import cats.effect.*
 import doobie.util.*
 import doobie.util.transactor.Transactor
