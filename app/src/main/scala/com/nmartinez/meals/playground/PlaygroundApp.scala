@@ -1,24 +1,24 @@
-package nmartinez.meals
+package com.nmartinez.meals.playground
 
-import cats.effect.IO
-import scala.scalajs.js.annotation.*
+import cats.effect.*
+import com.nmartinez.meals.App
 import org.scalajs.dom.document
 import tyrian.*
 import tyrian.Html.*
 import tyrian.cmds.Logger
-import cats.effect.*
-import scala.concurrent.duration.*
 
-object App {
+import scala.concurrent.duration.*
+import scala.scalajs.js.annotation.*
+
+object PlaygroundApp {
   sealed trait Msg
   case class Increase(amount: Int) extends Msg
   case class Decrease(amount: Int) extends Msg
   case class Model(count: Int)
 }
 
-@JSExportTopLevel("MealPlanRandomizerApp")
-class App extends TyrianApp[App.Msg, App.Model] {
-  import App.*
+class PlaygroundApp extends TyrianApp[PlaygroundApp.Msg, PlaygroundApp.Model] {
+  import PlaygroundApp.*
   // TyrianApp gets parametrized with [type of message, type of model]
   // (can start from something as simple as [Int, String])
 
