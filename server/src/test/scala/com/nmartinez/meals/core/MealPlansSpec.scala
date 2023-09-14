@@ -12,7 +12,6 @@ import org.scalatest.matchers.must.Matchers.contain
 import org.scalatest.matchers.should.Matchers.*
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
-
 import java.util.UUID
 import scala.collection.MapView
 import scala.collection.immutable.Map
