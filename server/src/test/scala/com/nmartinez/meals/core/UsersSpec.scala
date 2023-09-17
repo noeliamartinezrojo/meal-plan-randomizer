@@ -1,10 +1,10 @@
 package com.nmartinez.meals.core
 
-import cats.effect.{IO, *}
+import cats.effect.*
 import cats.effect.implicits.*
 import cats.effect.testing.scalatest.AsyncIOSpec
 import com.nmartinez.meals.UserFixture
-import com.nmartinez.meals.domain.User.User
+import com.nmartinez.meals.domain.auth.User.User
 import doobie.implicits.*
 import doobie.postgres.implicits.*
 import monocle.syntax.all.*
@@ -25,10 +25,10 @@ class UsersSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers with Inside
       transactor.use { xa =>
         val program = for {
           users <- LiveUsers[IO](xa)
-          result <- users.find(adminUser.email)
+          result <- users.find(existingUser.email)
         } yield result
 
-        program.asserting(_ shouldBe Option(adminUser))
+        program.asserting(_ shouldBe Option(existingUser))
       }
     }
 
@@ -66,7 +66,7 @@ class UsersSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers with Inside
       transactor.use { xa =>
         val program = for {
           users <- LiveUsers[IO](xa)
-          result <- users.create(adminUser).attempt // IO[Either[Throwable, Boolean]]
+          result <- users.create(existingUser).attempt // IO[Either[Throwable, Boolean]]
         } yield result
 
         program.asserting { outcome =>
@@ -82,17 +82,17 @@ class UsersSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers with Inside
       transactor.use { xa =>
         val program = for {
           users <- LiveUsers[IO](xa)
-          beforeUser <- sql"SELECT * FROM users WHERE email = ${clientUser.email}"
+          beforeUser <- sql"SELECT * FROM users WHERE email = ${existingUser.email}"
             .query[User].option.transact(xa)
-          result <- users.update(updatedClientUser)
-          afterUser <- sql"SELECT * FROM users WHERE email = ${clientUser.email}"
+          result <- users.update(updatedUser)
+          afterUser <- sql"SELECT * FROM users WHERE email = ${existingUser.email}"
             .query[User].option.transact(xa)
         } yield (beforeUser, result, afterUser)
 
         program.asserting { (beforeUser, result, afterUser) =>
-          beforeUser shouldBe Option(clientUser)
+          beforeUser shouldBe Option(existingUser)
           result shouldBe true
-          afterUser shouldBe Option(updatedClientUser)
+          afterUser shouldBe Option(updatedUser)
         }
       }
     }
@@ -120,15 +120,15 @@ class UsersSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers with Inside
       transactor.use { xa =>
         val program = for {
           users <- LiveUsers[IO](xa)
-          beforeUser <- sql"SELECT * FROM users WHERE email = ${adminUser.email}"
+          beforeUser <- sql"SELECT * FROM users WHERE email = ${existingUser.email}"
             .query[User].option.transact(xa)
-          result <- users.delete(adminUser.email)
-          afterUser <- sql"SELECT * FROM users WHERE email = ${adminUser.email}"
+          result <- users.delete(existingUser.email)
+          afterUser <- sql"SELECT * FROM users WHERE email = ${existingUser.email}"
             .query[User].option.transact(xa)
         } yield (beforeUser, result, afterUser)
 
         program.asserting { (beforeUser, result, afterUser) =>
-          beforeUser shouldBe Option(adminUser)
+          beforeUser shouldBe Option(existingUser)
           result shouldBe true
           afterUser shouldBe None
         }

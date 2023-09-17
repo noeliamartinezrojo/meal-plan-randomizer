@@ -1,6 +1,6 @@
 package com.nmartinez.meals.core
 
-import com.nmartinez.meals.domain.User.*
+import com.nmartinez.meals.domain.auth.User.*
 import cats.*
 import cats.data.NonEmptyList
 import cats.effect.*

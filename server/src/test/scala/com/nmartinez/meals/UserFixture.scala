@@ -1,47 +1,37 @@
 package com.nmartinez.meals
 
-import com.nmartinez.meals.domain.User.*
+import com.nmartinez.meals.domain.auth.User.*
 
 trait UserFixture {
 
-  val adminUser = User(
+  val existingUser = User(
     "noeliamtzrojo@gmail.com",
-    "password",
+    "$2a$10$/yKAcFyVz8njqqoZE4u4Z.55I01DZXfWTymJrtZwkwJo28x89jRUy", // "password"
     Option("Noelia"),
     Option("Martinez Rojo"),
     Role.ADMIN
   )
 
-  val clientUser = User(
-    "janesmith@fakeuser.com",
-    "password",
-    Option("Jane"),
-    Option("Smith"),
-    Role.CLIENT
+  val updatedUser = existingUser.copy(
+    hashedPassword = "updatedpassword",
+    firstName = Option("NOELIA"),
+    lastName = Option("MARTINEZ ROJO"),
+    role = Role.CLIENT
   )
 
-  val updatedClientUser = clientUser.copy(
-    hashedPassword = "newpassword",
-    firstName = Option("New Jane"),
-    lastName = Option("New Smith"),
-    role = Role.ADMIN
+  val notFoundUser = User(
+    "notfound@email.com",
+    "notfoundpassword",
+    None,
+    None,
+    Role.CLIENT
   )
 
   val newUser = User(
     "newuser@email.com",
-    "password",
-    None,
-    None,
-    Role.CLIENT
-  )
-
-  val notFoundEmail = "notfound@email.com"
-
-  val notFoundUser = User(
-    notFoundEmail,
-    "password",
-    None,
-    None,
+    "newpassword",
+    Option("Jane"),
+    Option("Smith"),
     Role.CLIENT
   )
 }
